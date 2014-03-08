@@ -1,5 +1,5 @@
 {
-  "name": "express-site",
+  "name": "nodestack-express",
   "version": "0.0.0",
   "description": "Simple express site based on browserify and stylus",
   "main": "index.js",
