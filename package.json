@@ -28,7 +28,9 @@
     "stylus": "~0.42.3",
     "jade": "~1.3.0",
     "nib": "~1.0.2",
-    "nconf": "~0.6.9"
+    "nconf": "~0.6.9",
+    "lodash": "~2.4.1",
+    "libyaml": "~0.2.3"
   },
   "devDependencies": {
     "lab-lint": "0.0.2",

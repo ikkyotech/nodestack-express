@@ -34,8 +34,14 @@ function testLocaleHandler(location, locale, handler) {
                     expect(options.foo).to.equal("bar");
                     expect(options.locales).to.deep.equal(LOCALES);
                     expect(options.i18n).to.equal(i18n);
-                    expect(options.getLocaleUrl("de")).to.equal("/de/test");
-                    expect(options.getLocaleUrl("/", "de")).to.equal("/de/");
+                    expect(options.getLocalePath("de")).to.equal("/de/test");
+                    expect(options.getLocalePath("")).to.equal("/test");
+                    expect(options.getLocalePath("/test", null)).to.equal("/" + locale + "/test");
+                    expect(options.getLocalePath("/", "de")).to.equal("/de/");
+                    expect(options.getLocaleUrl("de")).to.equal("http://localhost:8080/de/test");
+                    expect(options.getLocaleUrl("/", "de")).to.equal("http://localhost:8080/de/");
+                    expect(options.getLocaleUrl("")).to.equal("http://localhost:8080/test");
+                    expect(options.getLocaleUrl("/test", null)).to.equal("http://localhost:8080/" + locale + "/test");
                     return true;
                 }
                 return false;
@@ -61,7 +67,7 @@ Lab.test("Getting a proper locale url", function (done) {
             }
             return true;
         }).returns(null).times(4),
-        getLocalised = getLocalisedFactory(mockApp, LOCALES);
+        getLocalised = getLocalisedFactory(mockApp, "http://localhost:8080", LOCALES);
 
     /*jslint unparam: true*/
     getLocalised("/test", function (req, res, locale, options) {

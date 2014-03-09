@@ -21,23 +21,22 @@ Then setup your server.js with
 
 var site = require('nodestack-express');
 
-site(__dirname, {
-    locales: [
-        {id: 'en', name:'English'},
-        {id: 'de', name:'Deutsch'},
-        {id: 'ja', name:'日本語'}
-    ],
-    configure: function (app) {
-        app.getLocalised('/subpage', function(req, res, localeId, options) {
-    		// localeId ... en, de or ja
-    		// options .... Options with i18n settings added (will use the options object from the next line if given)
-        }, options);
-        app.getPage('/subpage', 'view', {me: true}); // Automatically renders a localised view
-    }
+site(__dirname,function (app) {
+    app.getLocalised('/subpage', function(req, res, localeId, options) {
+        // localeId ... en, de or ja
+        // options .... Options with i18n settings added (will use the options object from the next line if given)
+    }, options);
+    app.getPage('/subpage', 'view', {me: true}); // Automatically renders a localised view
 });
 ```
 
 ## Configuration
+
+You can setup your server by creating either a config.json, config.ini or config.yaml file. All content of those variables will be available in your jade template. It will also be used to setup your server. Common important variables are
+
+- *locales* A list of locales that are supported by your site (format: {id: <id>, name: <name>})
+- *PORT* Port for your server to start
+- *devMode* If the server is started in dev mode
 
 The system differnciates between configurations for various environments. The default environment is "dev". You have to make sure that there is a config.dev.json in your project root from which it can load the development configuration. If you want to support different environments all you need to do is add another config.x.json file in your root.
 

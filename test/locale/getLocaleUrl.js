@@ -12,3 +12,11 @@ Lab.test("Getting a proper locale url", function (done) {
     expect(parts.pathname).to.equal("/monster");
     done();
 });
+
+Lab.test("Getting non-locale url by passing ''", function (done) {
+    var parts = url.parse("http://google.com:8080/de/monster"),
+        result = getLocaleUrl(parts, "/money", "");
+    expect(result).to.equal("http://google.com:8080/money");
+    expect(parts.pathname).to.equal("/de/monster");
+    done();
+});
