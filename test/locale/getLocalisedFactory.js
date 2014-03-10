@@ -15,9 +15,8 @@ function testRootHandler(location, handler) {
     var req = {},
         i18n = mock.mock("setLocaleFromCookie").takes(req)
                    .mock("getLocale").returns("de"),
-        res = mock.mock("writeHead").takes(302, {'Location': '/de' + location})
-                  .mock('cookie').takes('locale', 'de', { path: '/', maxAge: 36000000, httpOnly: true })
-                  .mock("end");
+        res = mock.mock("redirect").takes('/de' + location)
+                  .mock('cookie').takes('locale', 'de', { path: '/', maxAge: 36000000, httpOnly: true });
     req.url = location;
     req.i18n = i18n;
     handler(req, res);
@@ -29,6 +28,8 @@ function testLocaleHandler(location, locale, handler) {
     var req = {},
         i18n = mock.mock("setLocale").takes(locale),
         res = mock.mock('cookie').takes('locale', locale, { path: '/', maxAge: 36000000, httpOnly: true })
+            .mock('getHeader').takes('Cache-Control').returns(null).times(4)
+            .mock('setHeader').takes('Cache-Control', 'public, max-age=300').times(4)
             .mock('render').takesF(function (view, options) {
                 if (view === "foo") {
                     expect(options.foo).to.equal("bar");
