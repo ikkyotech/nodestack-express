@@ -12,11 +12,29 @@ var Lab = require("lab"),
     ];
 
 function testRootHandler(location, handler) {
-    var req = {},
-        i18n = mock.mock("setLocaleFromCookie").takes(req)
-                   .mock("getLocale").returns("de"),
-        res = mock.mock("redirect").takes('/de' + location)
-                  .mock('cookie').takes('locale', 'de', { path: '/', maxAge: 36000000, httpOnly: true });
+    var req = {
+            headers: {
+                'accept-language': "en"
+            }
+        },
+        i18n = mock.mock("getLocale").returns("de"),
+        res = mock.mock("redirect").takes('/de' + location);
+    req.url = location;
+    req.i18n = i18n;
+    handler(req, res);
+    i18n.assert();
+    res.assert();
+}
+
+function testCookieRootHandler(location, handler) {
+    var req = {
+            cookies: {
+                'locale': "en"
+            }
+        },
+        i18n = mock.mock("getLocale").returns("de").times(2)
+                    .mock("setLocale").takes("en"),
+        res = mock.mock("redirect").takes('/de' + location);
     req.url = location;
     req.i18n = i18n;
     handler(req, res);
@@ -61,6 +79,7 @@ Lab.test("Getting a proper locale url", function (done) {
 
             if (isRootUrl) {
                 testRootHandler(location, handler);
+                testCookieRootHandler(location, handler);
             } else if (subUrlParts) {
                 testLocaleHandler(location, subUrlParts[1], handler);
             } else {
