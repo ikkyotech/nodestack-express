@@ -4,7 +4,7 @@
   "description": "This is a simple nodejs-express site system that standardizes configuration for the specific use of express for simple, localised homepages that only use nodejs technologies.",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/lab -r threshold"
+    "test": "lab -r threshold"
   },
   "repository": {
     "type": "git",
@@ -15,7 +15,10 @@
     "homepage",
     "system"
   ],
-  "author": "Martin Heidegger <martin.heidegger@gmail.com>",
+  "author": {
+    "name": "Martin Heidegger",
+    "email": "martin.heidegger@gmail.com"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/martinheidegger/nodestack-express/issues"
@@ -30,11 +33,22 @@
     "nconf": "~0.6.9",
     "lodash": "~2.4.1",
     "libyaml": "~0.2.3",
-    "i18n-yaml": "~0.4.1"
+    "i18n-yaml": "~0.4.3",
+    "js-yaml": "~3.0.2",
+    "to-markdown": "0.0.1",
+    "markdown": "~0.5.0"
   },
   "devDependencies": {
     "lab-lint": "0.0.2",
     "lab": "~1.7.0",
     "nodemock": "~0.3.3"
-  }
+  },
+  "readme": "# About\n\nThis is a simple nodejs-express site system that standardizes configuration for the specific use of express for simple, localised homepages that only use nodejs technologies.\n\nIt presets browserify, jade and stylus so you just need to create those folders and you are good to go.\n\nIt also set's up a locale system that should allow you to have a localised system setup in a jiffy!\n\n## Setup\n\nInstall this to your new project with \n\n```\n$ npm i nodestack-express --save\n```\n\nThen setup your server.js with\n\n```\n\"use strict\";\n\nvar site = require('nodestack-express');\n\nsite(__dirname,function (app) {\n    app.getLocalised('/subpage', function(req, res, localeId, options) {\n        // localeId ... en, de or ja\n        // options .... Options with i18n settings added (will use the options object from the next line if given)\n    }, options);\n    app.getPage('/subpage', 'view', {me: true}); // Automatically renders a localised view\n});\n```\n\n## Configuration\n\nYou can setup your server by creating either a config.json, config.ini or config.yaml file. All content of those variables will be available in your jade template. It will also be used to setup your server. Common important variables are\n\n- *locales* A list of locales that are supported by your site (format: {id: <id>, name: <name>})\n- *PORT* Port for your server to start\n- *devMode* If the server is started in dev mode\n\nThe system differnciates between configurations for various environments. The default environment is \"dev\". You have to make sure that there is a config.dev.json in your project root from which it can load the development configuration. If you want to support different environments all you need to do is add another config.x.json file in your root.\n\nYou can change environments by either setting the environment variable \"ENV\" to something different, by defining a argument when starting the server like:\n\n```\n$ node server.js --env=prod\n```",
+  "readmeFilename": "Readme.md",
+  "_id": "nodestack-express@0.0.4",
+  "dist": {
+    "shasum": "22e791a07d69b99db7e6a17b7be8aa4db50a8d8f"
+  },
+  "_from": "nodestack-express@0.0.4",
+  "_resolved": "https://registry.npmjs.org/nodestack-express/-/nodestack-express-0.0.4.tgz"
 }

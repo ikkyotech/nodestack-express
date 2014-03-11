@@ -13,16 +13,14 @@ var Lab = require("lab"),
 
 function testRootHandler(location, handler) {
     var req = {
+            url: location,
             headers: {
                 'accept-language': "en"
             }
         },
-        i18n = mock.mock("getLocale").returns("de"),
-        res = mock.mock("redirect").takes('/de' + location);
-    req.url = location;
-    req.i18n = i18n;
+        res = mock.mock("redirect").takes('/de' + location)
+                .mock("getLocale").returns("de");
     handler(req, res);
-    i18n.assert();
     res.assert();
 }
 
@@ -32,27 +30,24 @@ function testCookieRootHandler(location, handler) {
                 'locale': "en"
             }
         },
-        i18n = mock.mock("getLocale").returns("de").times(2)
-                    .mock("setLocale").takes("en"),
-        res = mock.mock("redirect").takes('/de' + location);
+        res = mock.mock("redirect").takes('/de' + location)
+                    .mock("getLocale").returns("de").times(2)
+                    .mock("setLocale").takes("en");
     req.url = location;
-    req.i18n = i18n;
     handler(req, res);
-    i18n.assert();
     res.assert();
 }
 
 function testLocaleHandler(location, locale, handler) {
     var req = {},
-        i18n = mock.mock("setLocale").takes(locale),
-        res = mock.mock('cookie').takes('locale', locale, { path: '/', maxAge: 36000000, httpOnly: true })
+        res = mock.mock("setLocale").takes(locale)
+            .mock('cookie').takes('locale', locale, { path: '/', maxAge: 36000000, httpOnly: true })
             .mock('getHeader').takes('Cache-Control').returns(null).times(4)
             .mock('setHeader').takes('Cache-Control', 'public, max-age=300').times(4)
             .mock('render').takesF(function (view, options) {
                 if (view === "foo") {
                     expect(options.foo).to.equal("bar");
                     expect(options.locales).to.deep.equal(LOCALES);
-                    expect(options.i18n).to.equal(i18n);
                     expect(options.getLocalePath("de")).to.equal("/de/test");
                     expect(options.getLocalePath("")).to.equal("/test");
                     expect(options.getLocalePath("/test", null)).to.equal("/" + locale + "/test");
@@ -66,9 +61,7 @@ function testLocaleHandler(location, locale, handler) {
                 return false;
             });
     req.url = location;
-    req.i18n = i18n;
     handler(req, res);
-    i18n.assert();
     res.assert();
 }
 
