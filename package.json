@@ -1,6 +1,6 @@
 {
   "name": "nodestack-express",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "This is a simple nodejs-express site system that standardizes configuration for the specific use of express for simple, localised homepages that only use nodejs technologies.",
   "main": "index.js",
   "scripts": {
