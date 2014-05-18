@@ -48,13 +48,13 @@ function testLocaleHandler(location, locale, handler) {
                 if (view === "foo") {
                     expect(options.foo).to.equal("bar");
                     expect(options.locales).to.deep.equal(LOCALES);
-                    expect(options.getLocalePath("de")).to.equal("/de/test");
-                    expect(options.getLocalePath("")).to.equal("/test");
-                    expect(options.getLocalePath("/test", null)).to.equal("/" + locale + "/test");
+                    expect(options.getLocalePath("de")).to.match(/^\/de\/test\/?$/);
+                    expect(options.getLocalePath("")).to.match(/^\/test\/?$/);
+                    expect(options.getLocalePath("/test", null)).to.match(/^\/(de|en|ja)\/test\/?$/);
                     expect(options.getLocalePath("/", "de")).to.equal("/de/");
-                    expect(options.getLocaleUrl("de")).to.equal("http://localhost:8080/de/test");
+                    expect(options.getLocaleUrl("de")).to.match(/^http\:\/\/localhost\:8080\/de\/test\/?$/);
                     expect(options.getLocaleUrl("/", "de")).to.equal("http://localhost:8080/de/");
-                    expect(options.getLocaleUrl("")).to.equal("http://localhost:8080/test");
+                    expect(options.getLocaleUrl("")).to.match(/^http\:\/\/localhost\:8080\/test\/?$/);
                     expect(options.getLocaleUrl("/test", null)).to.equal("http://localhost:8080/" + locale + "/test");
                     return true;
                 }
@@ -65,9 +65,51 @@ function testLocaleHandler(location, locale, handler) {
     res.assert();
 }
 
+function testRedirectHandler(location, handler) {
+    var req = {},
+        res = mock.mock("redirect").takesF(function (location) {
+            expect(/^\/(en|de|ja)\/test\/$/.test(location)).to.equals(true);
+            return true;
+        });
+
+    req.url = location;
+    handler(req, res);
+    res.assert();
+}
+
 Lab.test("Getting a proper locale url", function (done) {
     var mockApp = mock.mock("get").takesF(function (location, handler) {
-            var isRootUrl = "/test" === location,
+            var isRootUrl = /^\/test\/?$/.test(location),
+                isRedirectUrl = /^\/(en|de|ja)\/test$/.test(location),
+                subUrlParts = /^\/(en|de|ja)\/test\/$/.exec(location);
+
+            if (isRedirectUrl) {
+                testRedirectHandler(location, handler);
+            } else if (isRootUrl) {
+                testRootHandler(location, handler);
+                testCookieRootHandler(location, handler);
+            } else if (subUrlParts) {
+                testLocaleHandler(location, subUrlParts[1], handler);
+            } else {
+                return false;
+            }
+            return true;
+        }).returns(null).times(7),
+        getLocalised = getLocalisedFactory(mockApp, "http://localhost:8080", LOCALES);
+
+    /*jslint unparam: true*/
+    getLocalised("/test/", function (req, res, locale, options) {
+        res.render("foo", options);
+    }, {"foo": "bar"});
+    /*jslint unparam: false*/
+
+    mockApp.assert();
+    done();
+});
+
+Lab.test("Getting a proper locale url", function (done) {
+    var mockApp = mock.mock("get").takesF(function (location, handler) {
+            var isRootUrl = /^\/test\/?$/.test(location),
                 subUrlParts = /^\/(en|de|ja)\/test$/.exec(location);
 
             if (isRootUrl) {
