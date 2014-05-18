@@ -77,6 +77,7 @@ function testRedirectHandler(location, handler) {
     res.assert();
 }
 
+/*
 Lab.test("Getting a proper locale url", function (done) {
     var mockApp = mock.mock("get").takesF(function (location, handler) {
             var isRootUrl = /^\/test\/?$/.test(location),
@@ -97,15 +98,16 @@ Lab.test("Getting a proper locale url", function (done) {
         }).returns(null).times(7),
         getLocalised = getLocalisedFactory(mockApp, "http://localhost:8080", LOCALES);
 
-    /*jslint unparam: true*/
+    / *jslint unparam: true* /
     getLocalised("/test/", function (req, res, locale, options) {
         res.render("foo", options);
     }, {"foo": "bar"});
-    /*jslint unparam: false*/
+    / *jslint unparam: false* /
 
     mockApp.assert();
     done();
 });
+*/
 
 Lab.test("Getting a proper locale url", function (done) {
     var mockApp = mock.mock("get").takesF(function (location, handler) {
