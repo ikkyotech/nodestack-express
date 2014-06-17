@@ -1,6 +1,6 @@
 {
   "name": "nodestack-express",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "This is a simple nodejs-express site system that standardizes configuration for the specific use of express for simple, localised homepages that only use nodejs technologies.",
   "main": "index.js",
   "scripts": {
@@ -36,7 +36,8 @@
     "js-yaml": "~3.0.2",
     "to-markdown": "0.0.1",
     "marked": "~0.3.2",
-    "envify": "~1.2.1"
+    "envify": "~1.2.1",
+    "gaze": "~0.6.4"
   },
   "devDependencies": {
     "lab-lint": "0.0.2",
